@@ -66,6 +66,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	locale "github.com/klauspost/lctime/internal/locales"
 )
 
 // Localizer provides translation to a locale.
