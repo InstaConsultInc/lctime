@@ -3,6 +3,8 @@ package lctime
 import (
 	"testing"
 	"time"
+
+	"gotest.tools/assert"
 )
 
 func TestPera(t *testing.T) {
@@ -236,6 +238,13 @@ func TestPerD(t *testing.T) {
 	}
 }
 
+func TestTranslateNumbers(t *testing.T) {
+	SetLocale("ar_EG")
+	assert.Equal(t, "٤", lc.translateNumber(4))
+	assert.Equal(t, "٤٤٤٤", lc.translateNumber(4444))
+	SetLocale("POSIX")
+}
+
 func TestPere(t *testing.T) {
 	tests := []struct {
 		input time.Time
@@ -250,6 +259,7 @@ func TestPere(t *testing.T) {
 		if got := lc.pere(test.input); got != test.want {
 			t.Errorf(gotWantIdx, i, got, test.want)
 		}
+		SetLocale("POSIX")
 	}
 }
 
@@ -638,7 +648,7 @@ func TestPerx(t *testing.T) {
 		{time.Date(2024, 9, 20, 23, 33, 13, 961479, time.UTC),
 			"fr_FR", "20/09/2024"},
 		{time.Date(1805, 11, 1, 11, 12, 14, 651205, time.UTC),
-			"ar_EG", "01 نوف, 1805"},
+			"ar_EG", "٠١ نوف, ١٨٠٥"},
 	}
 
 	for i, test := range tests {
@@ -686,6 +696,8 @@ func TestPerX(t *testing.T) {
 			t.Error("locale:", test.locale)
 			t.Errorf(gotWantIdx, i, got, test.want)
 		}
+
+		SetLocale("POSIX")
 	}
 }
 

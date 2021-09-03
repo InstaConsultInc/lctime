@@ -7,6 +7,7 @@ package lctime
 import (
 	"fmt"
 	"time"
+	"unicode/utf8"
 )
 
 // pera returns the locale's abbreviated weekday name.
@@ -42,7 +43,7 @@ func (lc *localeData) perC(t time.Time) string {
 
 // perd returns the day of the month as a decimal number [01,31].
 func (lc *localeData) perd(t time.Time) string {
-	return lc.translateNumber(t.Day())
+	return lc.pad(lc.translateNumber(t.Day()), 2)
 }
 
 // perD returns the date formatted as %m/%d/%y.
@@ -50,16 +51,44 @@ func (lc *localeData) perD(t time.Time) string {
 	return lc.Strftime("%m/%d/%y", t)
 }
 
+func (lc *localeData) pad(s string, length int) string {
+	if utf8.RuneCountInString(s) == length {
+		return s
+	}
+
+	paddingCount := length - utf8.RuneCountInString(s)
+	if paddingCount < 0 {
+		return s
+	}
+
+	paddingCh := "0"
+	if len(lc.Numbers) != 0 {
+		paddingCh = lc.Numbers[0]
+	}
+
+	for i := 0; i < paddingCount; i++ {
+		s = paddingCh + s
+	}
+
+	return s
+}
+
 func (lc *localeData) translateNumber(i int) string {
 	if len(lc.Numbers) == 0 {
-		return fmt.Sprintf("%02d", i)
+		return fmt.Sprintf("%d", i)
 	}
 
 	if i == 0 {
 		return lc.Numbers[0]
 	}
 
-	return lc.Numbers[i/10] + lc.Numbers[i%10]
+	s := ""
+	for i > 0 {
+		s = lc.Numbers[i%10] + s
+		i = i / 10
+	}
+
+	return s
 }
 
 // pere returns the day of the month as a decimal number [1,31]; a single digit
@@ -81,18 +110,18 @@ func (lc *localeData) perF(t time.Time) string {
 // [00,99].
 func (lc *localeData) perg(t time.Time) string {
 	y, _ := t.ISOWeek()
-	return fmt.Sprintf("%s", lc.translateNumber(y%100))
+	return fmt.Sprintf("%s", lc.pad(lc.translateNumber(y%100), 2))
 }
 
 // perG returns the week-based year as a decimal number (for example, 1977).
 func (lc *localeData) perG(t time.Time) string {
 	y, _ := t.ISOWeek()
-	return fmt.Sprintf("%s", lc.translateNumber(y))
+	return fmt.Sprintf("%s", lc.pad(lc.translateNumber(y), 2))
 }
 
 // perH returns the hour (24-hour clock) as a decimal number [00,23].
 func (lc *localeData) perH(t time.Time) string {
-	return fmt.Sprintf("%s", lc.translateNumber(t.Hour()))
+	return fmt.Sprintf("%s", lc.pad(lc.translateNumber(t.Hour()), 2))
 }
 
 // perI returns the hour (12-hour clock) as a decimal number [01,12].
@@ -102,22 +131,22 @@ func (lc *localeData) perI(t time.Time) string {
 		hr = 12
 	}
 
-	return fmt.Sprintf("%s", lc.translateNumber(hr))
+	return fmt.Sprintf("%s", lc.pad(lc.translateNumber(hr), 2))
 }
 
 // perj returns the day of the year as a decimal number [001,366].
 func (lc *localeData) perj(t time.Time) string {
-	return fmt.Sprintf("%03d", t.YearDay())
+	return lc.pad(lc.translateNumber(t.YearDay()), 3)
 }
 
 // perm returns the month as a decimal number [01,12].
 func (lc *localeData) perm(t time.Time) string {
-	return fmt.Sprintf("%s", lc.translateNumber(int(t.Month())))
+	return lc.pad(lc.translateNumber(int(t.Month())), 2)
 }
 
 // perM returns the minute as a decimal number [00,59].
 func (lc *localeData) perM(t time.Time) string {
-	return fmt.Sprintf("%s", lc.translateNumber(t.Minute()))
+	return lc.pad(lc.translateNumber(t.Minute()), 2)
 }
 
 // pern returns a newline.
@@ -145,7 +174,7 @@ func (lc *localeData) perR(t time.Time) string {
 
 // perS returns the second as a decimal number [00,60].
 func (lc *localeData) perS(t time.Time) string {
-	return fmt.Sprintf("%s", lc.translateNumber(t.Second()))
+	return lc.pad(lc.translateNumber(t.Second()), 2)
 }
 
 // pert returns a tab.
@@ -174,7 +203,7 @@ func (lc *localeData) peru(t time.Time) string {
 // before this are in week 0.
 func (lc *localeData) perU(t time.Time) string {
 	_, wn := t.ISOWeek()
-	return fmt.Sprintf("%s", lc.translateNumber(wn))
+	return lc.pad(lc.translateNumber(wn), 2)
 }
 
 // perV returns the week number of the year (Monday as the first day of the
@@ -184,13 +213,13 @@ func (lc *localeData) perU(t time.Time) string {
 // 4th and the first Thursday of January are always in week 1.
 func (lc *localeData) perV(t time.Time) string {
 	_, wn := t.ISOWeek()
-	return fmt.Sprintf("%s", lc.translateNumber(wn))
+	return lc.pad(lc.translateNumber(wn), 2)
 }
 
 // perw returns the weekday as a decimal number [0,6], with 0 representing
 // Sunday.
 func (lc *localeData) perw(t time.Time) string {
-	return fmt.Sprintf("%s", lc.translateNumber(int(t.Weekday())))
+	return lc.translateNumber(int(t.Weekday()))
 }
 
 // perW returns the week number of the year as a decimal number [00,53]. The
@@ -198,7 +227,7 @@ func (lc *localeData) perw(t time.Time) string {
 // before this are in week 0.
 func (lc *localeData) perW(t time.Time) string {
 	_, wn := t.ISOWeek()
-	return fmt.Sprintf("%s", lc.translateNumber(wn-1))
+	return lc.pad(lc.translateNumber(wn-1), 2)
 }
 
 // perx returns the locale's appropriate date representation.
@@ -213,12 +242,12 @@ func (lc *localeData) perX(t time.Time) string {
 
 // pery returns the last two digits of the year as a decimal number [00,99].
 func (lc *localeData) pery(t time.Time) string {
-	return fmt.Sprintf("%s", lc.translateNumber(t.Year()%100))
+	return lc.pad(lc.translateNumber(t.Year()%100), 2)
 }
 
 // perY returns the year as a decimal number (for example, 1997).
 func (lc *localeData) perY(t time.Time) string {
-	return fmt.Sprint(t.Year())
+	return lc.translateNumber(t.Year())
 }
 
 // perz returns the offset from UTC in the ISO 8601:2000 standard format ( +hhmm
