@@ -66,8 +66,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"github.com/klauspost/lctime/internal/locales"
 )
 
 // Localizer provides translation to a locale.
@@ -83,6 +81,7 @@ type localeData struct {
 	Months      []string
 	ShortMonths []string
 	AMPM        []string
+	Numbers     []string
 
 	Date     string
 	DateTime string
@@ -152,7 +151,7 @@ func loadLocale(id string) (*localeData, error) {
 	if err := json.Unmarshal(bys, &lc); err != nil {
 		return nil, ErrCorruptLocale
 	}
-	
+
 	loaded.Store(id, &lc)
 	return &lc, nil
 }
