@@ -1,3 +1,3 @@
-module github.com/klauspost/lctime
+module github.com/InstaConsultInc/lctime
 
 go 1.17

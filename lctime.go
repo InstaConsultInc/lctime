@@ -67,7 +67,7 @@ import (
 	"sync"
 	"time"
 
-	locale "github.com/klauspost/lctime/internal/locales"
+	locale "github.com/InstaConsultInc/lctime/internal/locales"
 )
 
 // Localizer provides translation to a locale.
