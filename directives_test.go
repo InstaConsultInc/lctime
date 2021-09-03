@@ -241,11 +241,12 @@ func TestPere(t *testing.T) {
 		input time.Time
 		want  string
 	}{
-		{time.Date(1846, 9, 4, 22, 16, 5, 108059, time.UTC), " 4"},
-		{time.Date(2045, 11, 23, 8, 14, 34, 971351, time.UTC), "23"},
+		{time.Date(1846, 9, 4, 22, 16, 5, 108059, time.UTC), " ٤"},
+		{time.Date(2045, 11, 23, 8, 14, 34, 971351, time.UTC), "٢٣"},
 	}
 
 	for i, test := range tests {
+		SetLocale("ar_EG")
 		if got := lc.pere(test.input); got != test.want {
 			t.Errorf(gotWantIdx, i, got, test.want)
 		}
