@@ -2,7 +2,10 @@ package lctime
 
 import (
 	"bytes"
+	"fmt"
 	"time"
+
+	"golang.org/x/text/language"
 )
 
 // Strftime formats a time.Time. It's locale-aware, so make sure you call
@@ -19,6 +22,22 @@ func StrftimeLoc(locale, format string, t time.Time) (string, error) {
 		return "", err
 	}
 	return lc.Strftime(format, t), nil
+}
+
+// to translate time.duration
+func Strfduration(duration time.Duration, locale language.Tag) (string, error) {
+	lc, err := loadLocale(locale.String())
+	if err != nil {
+		fmt.Println("Failed to load locale. Err=%v", err)
+		return "", err
+	}
+
+	switch locale {
+	case language.Arabic:
+		return lc.translateNumber(int(duration.Minutes())), nil
+	default:
+		return fmt.Sprintf("%.0v", duration), nil
+	}
 }
 
 func (lc *localeData) Strftime(format string, t time.Time) string {
