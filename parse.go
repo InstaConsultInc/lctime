@@ -3,7 +3,6 @@ package lctime
 import (
 	"bytes"
 	"fmt"
-	"strconv"
 	"time"
 
 	"golang.org/x/text/language"
@@ -39,17 +38,11 @@ func Strfduration(duration time.Duration, locale language.Tag) (string, error) {
 			fmt.Println("Failed to load locale. Err= ", err)
 			return "", err
 		}
-		digits := strconv.Itoa(int(duration.Minutes()))
-		translated := ""
-
-		for _, dig := range digits {
-			translated += lc.translateNumber(CharToNumber(dig))
-		}
-		fmt.Println("translated duration = ", translated)
-		return translated, nil
+		fmt.Println("locale =", locale.String()+"_EG", " duration = ", int(duration.Minutes()), "arr", lc.Numbers, "transelated", lc.translateNumber(int(duration.Minutes())))
+		return lc.translateNumber(int(duration.Minutes())), nil
 	default:
-		fmt.Println("english duration = ", fmt.Sprintf("%.0v", duration))
-		return fmt.Sprintf("%.0v", duration), nil
+		fmt.Println("english duration = ", fmt.Sprintf("%.0v", duration.Minutes()))
+		return fmt.Sprintf("%.0v", duration.Minutes()), nil
 	}
 }
 

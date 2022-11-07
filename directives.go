@@ -74,10 +74,10 @@ func (lc *localeData) pad(s string, length int) string {
 }
 
 func (lc *localeData) translateNumber(i int) string {
+	fmt.Println("numbers=",lc.Numbers,"integer number=",i)
 	if len(lc.Numbers) == 0 {
 		return fmt.Sprintf("%d", i)
 	}
-
 	if i == 0 {
 		return lc.Numbers[0]
 	}
