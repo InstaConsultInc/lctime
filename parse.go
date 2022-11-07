@@ -45,9 +45,10 @@ func Strfduration(duration time.Duration, locale language.Tag) (string, error) {
 		for _, dig := range digits {
 			translated += lc.translateNumber(CharToNumber(dig))
 		}
-
+		fmt.Println("translated duration = ", translated)
 		return translated, nil
 	default:
+		fmt.Println("english duration = ", fmt.Sprintf("%.0v", duration))
 		return fmt.Sprintf("%.0v", duration), nil
 	}
 }
