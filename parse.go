@@ -3,6 +3,7 @@ package lctime
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 	"time"
 
 	"golang.org/x/text/language"
@@ -27,6 +28,23 @@ func StrftimeLoc(locale, format string, t time.Time) (string, error) {
 // /convert charNumber to int
 func CharToNumber(c rune) int {
 	return int(c - '0')
+}
+
+// /to translate number
+func TranslateNumber(num string) (string, error) {
+	lc, err := loadLocale("ar_EG")
+	if err != nil {
+		fmt.Println("Failed to load locale. Err= ", err)
+		return "", err
+	}
+
+	n, err := strconv.Atoi(num)
+	if err != nil {
+		fmt.Println("Failed to parse string. Err= ", err)
+		return "", err
+	}
+
+	return lc.translateNumber(n), nil
 }
 
 // to translate time.duration
