@@ -56,10 +56,8 @@ func Strfduration(duration time.Duration, locale language.Tag) (string, error) {
 			fmt.Println("Failed to load locale. Err= ", err)
 			return "", err
 		}
-		fmt.Println("locale =", locale.String()+"_EG", " duration = ", int(duration.Minutes()), "arr", lc.Numbers, "transelated", lc.translateNumber(int(duration.Minutes())))
 		return lc.translateNumber(int(duration.Minutes())), nil
 	default:
-		fmt.Println("english duration = ", fmt.Sprintf("%.0v", int32(duration.Minutes())))
 		return fmt.Sprintf("%.0v", int32(duration.Minutes())), nil
 	}
 }
