@@ -3,6 +3,7 @@ package lctime
 import (
 	"bytes"
 	"fmt"
+	"strconv"
 	"time"
 
 	"golang.org/x/text/language"
@@ -24,18 +25,28 @@ func StrftimeLoc(locale, format string, t time.Time) (string, error) {
 	return lc.Strftime(format, t), nil
 }
 
+// /convert charNumber to int
+func CharToNumber(c rune) int {
+	return int(c - '0')
+}
+
 // to translate time.duration
 func Strfduration(duration time.Duration, locale language.Tag) (string, error) {
-	fmt.Println("locale string = ", locale.String())
-	lc, err := loadLocale(locale.String() + "_EG")
-	if err != nil {
-		fmt.Println("Failed to load locale. Err= ", err)
-		return "", err
-	}
-
 	switch locale {
 	case language.Arabic:
-		return lc.translateNumber(int(duration.Minutes())), nil
+		lc, err := loadLocale(locale.String() + "_EG")
+		if err != nil {
+			fmt.Println("Failed to load locale. Err= ", err)
+			return "", err
+		}
+		digits := strconv.Itoa(int(duration.Minutes()))
+		translated := ""
+
+		for _, dig := range digits {
+			translated += lc.translateNumber(CharToNumber(dig))
+		}
+
+		return translated, nil
 	default:
 		return fmt.Sprintf("%.0v", duration), nil
 	}
