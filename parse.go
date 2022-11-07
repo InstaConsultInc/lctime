@@ -26,9 +26,10 @@ func StrftimeLoc(locale, format string, t time.Time) (string, error) {
 
 // to translate time.duration
 func Strfduration(duration time.Duration, locale language.Tag) (string, error) {
-	lc, err := loadLocale(locale.String())
+	fmt.Println("locale string = ", locale.String())
+	lc, err := loadLocale(locale.String() + "_EG")
 	if err != nil {
-		fmt.Println("Failed to load locale. Err=%v", err)
+		fmt.Println("Failed to load locale. Err= ", err)
 		return "", err
 	}
 
