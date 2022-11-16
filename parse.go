@@ -58,7 +58,7 @@ func Strfduration(duration time.Duration, locale language.Tag) (string, error) {
 		}
 		return lc.translateNumber(int(duration.Minutes())), nil
 	default:
-		return fmt.Sprintf("%.0v", int32(duration.Minutes())), nil
+		return fmt.Sprintf("%d", int32(duration.Minutes())), nil
 	}
 }
 
